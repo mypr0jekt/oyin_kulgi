@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Do'kon - NOTRAGEN GAMES</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- Same as index.html -->
+  </nav>
+
+  <section class="games-preview" style="padding-top:30px">
+    <h2>💎 Diamond Do'koni</h2>
+    <p style="text-align:center;color:#b2bec3;margin-bottom:30px">
+      <i class="fas fa-info-circle"></i> Bu diamondlar faqat kazino o'yinlarida ishlatiladi. 
+      Yechib olish uchun o'yinlarda yutgan diamondlaringizdan foydalaning.
+    </p>
+    
+    <div class="games-grid" id="shopPackages" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <!-- JS orqali to'ldiriladi -->
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadShopPackages();
+    });
+    
+    function loadShopPackages() {
+      const container = document.getElementById('shopPackages');
+      if (!container) return;
+      
+      // Load from admin settings or use defaults
+      let packages = JSON.parse(localStorage.getItem('notragen_packages') || 'null');
+      if (!packages) {
+        packages = [
+          { id: 1, amount: 50, price: '$0.99' },
+          { id: 2, amount: 120, price: '$2.49' },
+          { id: 3, amount: 250, price: '$4.99' },
+          { id: 4, amount: 500, price: '$9.99' },
+          { id: 5, amount: 1000, price: '$19.99' },
+          { id: 6, amount: 2500, price: '$49.99' }
+        ];
+      }
+      
+      container.innerHTML = packages.map(pkg => `
+        <div class="game-card" style="border-color:var(--diamond);cursor:default">
+          <i class="fas fa-gem" style="color:var(--diamond);font-size:3rem"></i>
+          <h3>${pkg.amount} 💎</h3>
+          <div style="font-size:1.5rem;font-weight:bold;color:var(--warning);margin:10px 0">${pkg.price}</div>
+          <p style="color:#b2bec3;font-size:0.9rem;margin-bottom:15px">Faqat o'yinlar uchun</p>
+          <button class="btn btn-primary" onclick="buyDiamonds(${pkg.id})">
+            <i class="fas fa-shopping-cart"></i> Sotib Olish
+          </button>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

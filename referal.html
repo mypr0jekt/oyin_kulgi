@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Taklif Qilish - NOTRAGEN GAMES</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- Same as index.html -->
+  </nav>
+
+  <div class="auth-container" style="max-width:600px;margin:50px auto">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="fas fa-users" style="font-size:2.5rem;color:var(--secondary)"></i>
+        <h2>Do'stlarni Taklif Qilish</h2>
+      </div>
+
+      <div style="text-align:center;margin:25px 0">
+        <div style="background:var(--gradient);padding:20px;border-radius:15px;margin-bottom:20px">
+          <h3 style="margin-bottom:10px">🎁 Har bir do'stingiz uchun</h3>
+          <div style="font-size:2.5rem;font-weight:bold">+5 💎</div>
+          <p style="margin-top:10px">Do'stingiz ro'yxatdan o'tgach, bonus avtomatik hisobingizga tushadi!</p>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Sizning taklif havolangiz</label>
+        <div style="display:flex;gap:10px">
+          <input type="text" id="referralLink" readonly style="flex:1"/>
+          <button class="btn btn-primary" onclick="copyReferralLink()">
+            <i class="fas fa-copy"></i> Nusxalash
+          </button>
+        </div>
+      </div>
+
+      <div style="margin:25px 0">
+        <h4 style="margin-bottom:15px;color:var(--secondary)">Taklif Qilish Qoidalari</h4>
+        <ul style="color:#b2bec3;line-height:2">
+          <li>✅ Do'stingiz havola orqali ro'yxatdan o'tishi kerak</li>
+          <li>✅ U MLBB ID va Server ID kiritishi shart</li>
+          <li>✅ Bonus faqat bir marta beriladi (har bir foydalanuvchi uchun)</li>
+          <li>❌ O'z hisoblaringizni taklif qilmang (tizim aniqlaydi)</li>
+        </ul>
+      </div>
+
+      <div id="referralStats">
+        <h4 style="margin-bottom:15px;color:var(--secondary)">Sizning Takliflaringiz</h4>
+        <div id="referralList">
+          <!-- JS orqali to'ldiriladi -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Generate and show referral link
+      const baseUrl = window.location.origin;
+      document.getElementById('referralLink').value = `${baseUrl}/login.html?ref=${currentUser.id}`;
+      
+      // Load referral stats
+      loadReferralStats();
+      
+      // Check for referral in URL (for new users)
+      const urlParams = new URLSearchParams(window.location.search);
+      const referrerId = urlParams.get('ref');
+      if (referrerId && !currentUser.referrerProcessed) {
+        processReferral(referrerId);
+      }
+    });
+    
+    function loadReferralStats() {
+      const users = JSON.parse(localStorage.getItem('notragen_users') || '[]');
+      const referrals = users.filter(u => u.referrerId === currentUser?.id);
+      
+      const list = document.getElementById('referralList');
+      if (!list) return;
+      
+      if (referrals.length === 0) {
+        list.innerHTML = '<p style="color:#b2bec3;text-align:center">Hozircha taklif qilingan do\'stlar yo\'q</p>';
+        return;
+      }
+      
+      let totalBonus = referrals.length * 5;
+      
+      list.innerHTML = `
+        <div style="background:rgba(0,184,148,0.15);border:1px solid #00b894;padding:15px;border-radius:10px;margin-bottom:15px">
+          <strong>🎉 Jami bonus: +${totalBonus} 💎</strong>
+        </div>
+        ${referrals.map(r => `
+          <div style="background:rgba(0,0,0,0.2);padding:12px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong>${r.username}</strong>
+              <div style="font-size:0.85rem;color:#b2bec3">${new Date(r.createdAt).toLocaleDateString('uz-UZ')}</div>
+            </div>
+            <span style="background:rgba(0,184,148,0.2);color:#00b894;padding:4px 12px;border-radius:20px;font-size:0.85rem;font-weight:bold">+5 💎</span>
+          </div>
+        `).join('')}
+      `;
+    }
+    
+    function processReferral(referrerId) {
+      // Mark that this user was referred
+      const users = JSON.parse(localStorage.getItem('notragen_users') || '[]');
+      const userIndex = users.findIndex(u => u.id === currentUser.id);
+      
+      if (userIndex !== -1 && !users[userIndex].referrerId) {
+        // Add referrer
+        users[userIndex].referrerId = parseInt(referrerId);
+        
+        // Give bonus to referrer
+        const referrerIndex = users.findIndex(u => u.id === parseInt(referrerId));
+        if (referrerIndex !== -1) {
+          users[referrerIndex].diamonds = (users[referrerIndex].diamonds || 0) + 5;
+          
+          // Update if referrer is current user (edge case)
+          if (currentUser.id === parseInt(referrerId)) {
+            currentUser.diamonds = users[referrerIndex].diamonds;
+            localStorage.setItem('notragen_user', JSON.stringify(currentUser));
+          }
+          
+          showToast(`Do'stingiz taklif qildi! +5 💎 bonus ${users[referrerIndex].username} hisobiga qo'shildi!`, 'success');
+        }
+        
+        localStorage.setItem('notragen_users', JSON.stringify(users));
+        currentUser.referrerProcessed = true; // Prevent duplicate
+      }
+    }
+  </script>
+</body>
+</html>

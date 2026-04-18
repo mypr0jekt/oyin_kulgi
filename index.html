@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOTRAGEN GAMES - Diamond Qozon!</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Reklama joyi (admin tomonidan boshqariladi) -->
+  <div id="ad-banner" class="ad-banner">
+    <img src="assets/images/ad-placeholder.png" alt="Reklama" id="ad-image"/>
+    <button class="close-ad" onclick="closeAd()">&times;</button>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="assets/icons/logo.png" alt="NOTRAGEN"/>
+      <span>NOTRAGEN GAMES</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Bosh sahifa</a></li>
+      <li><a href="games.html">O'yinlar</a></li>
+      <li><a href="shop.html">Do'kon</a></li>
+      <li><a href="withdraw.html">Yechib olish</a></li>
+      <li><a href="referral.html">Taklif qilish</a></li>
+    </ul>
+    <div class="user-info" id="userInfo">
+      <span id="userDiamonds">💎 0</span>
+      <button onclick="logout()">Chiqish</button>
+    </div>
+    <div class="mobile-menu" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>🎮 O'yna, Qozon, Diamond Ol!</h1>
+      <p>20+ ta 3D o'yinlar orqali MLBB diamondlaringizni ko'paytiring</p>
+      <div class="hero-buttons">
+        <a href="games.html" class="btn btn-primary">O'yinlarga Kirish</a>
+        <a href="login.html" class="btn btn-secondary" id="authBtn">Ro'yxatdan o'tish</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="assets/images/hero-game.png" alt="Games"/>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="feature-card">
+      <i class="fas fa-gamepad"></i>
+      <h3>20+ O'yinlar</h3>
+      <p>3D grafikali, qiziqarli kazino uslubidagi o'yinlar</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-gem"></i>
+      <h3>Haqiqiy Diamond</h3>
+      <p>Yutgan diamondlaringizni MLBB hisobingizga oling</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-users"></i>
+      <h3>Do'stlarni Taklif Qil</h3>
+      <p>Har bir do'stingiz uchun 5 diamond bonus oling</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Xavfsiz Tizim</h3>
+      <p>Google autentifikatsiya va ID tekshiruvi bilan himoyalangan</p>
+    </div>
+  </section>
+
+  <!-- Popular Games Preview -->
+  <section class="games-preview">
+    <h2>🔥 Mashhur O'yinlar</h2>
+    <div class="games-grid" id="popularGames">
+      <!-- JS orqali to'ldiriladi -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="assets/icons/logo.png" alt="NOTRAGEN"/>
+        <p>© 2026 NOTRAGEN GAMES. Barcha huquqlar himoyalangan.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">Shartlar</a>
+        <a href="#">Maxfiylik</a>
+        <a href="admin.html">Admin</a>
+        <a href="#">Yordam</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

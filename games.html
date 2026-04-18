@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>O'yinlar - NOTRAGEN GAMES</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    .games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 30px 5%;
+    }
+    
+    .game-full-card {
+      background: rgba(45,52,54,0.9);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      border: 2px solid rgba(108,92,231,0.3);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .game-full-card:hover {
+      border-color: var(--secondary);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(108,92,231,0.2);
+    }
+    
+    .game-full-card i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: var(--diamond);
+      display: block;
+    }
+    
+    .game-full-card h3 {
+      margin-bottom: 10px;
+      color: var(--secondary);
+    }
+    
+    .game-full-card .reward {
+      display: inline-block;
+      background: rgba(253,203,110,0.2);
+      color: #fdcb6e;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .game-full-card .play-btn {
+      margin-top: 15px;
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    
+    .game-full-card .play-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .game-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .game-modal.active {
+      display: flex;
+    }
+    
+    .game-canvas {
+      background: rgba(45,52,54,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 90%;
+      max-height: 90%;
+      text-align: center;
+      border: 2px solid var(--secondary);
+    }
+    
+    .game-canvas h3 {
+      margin-bottom: 20px;
+      color: var(--secondary);
+    }
+    
+    .game-controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .game-result {
+      font-size: 1.5rem;
+      margin: 20px 0;
+      min-height: 40px;
+      color: var(--warning);
+      font-weight: bold;
+    }
+    
+    .close-game {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar (same as index.html) -->
+  <nav class="navbar">
+    <!-- ... navbar content ... -->
+  </nav>
+
+  <!-- Games Grid -->
+  <div class="games-container" id="gamesGrid">
+    <!-- 20+ games rendered by JS -->
+  </div>
+
+  <!-- Game Modal -->
+  <div class="game-modal" id="gameModal">
+    <button class="close-game" onclick="closeGame()">&times;</button>
+    <div class="game-canvas" id="gameCanvas">
+      <!-- Game content loads here -->
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/games.js"></script>
+</body>
+</html>

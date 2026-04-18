@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kirish - NOTRAGEN GAMES</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="assets/icons/logo.png" alt="NOTRAGEN"/>
+        <h2>NOTRAGEN GAMES</h2>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-tab="login">Kirish</button>
+        <button class="tab-btn" data-tab="register">Ro'yxatdan o'tish</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="Google Email" required/>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPass" placeholder="Parol" required/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Kirish</button>
+        <button type="button" class="btn btn-google" onclick="googleLogin()">
+          <i class="fab fa-google"></i> Google bilan kirish
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="regUsername" placeholder="Foydalanuvchi nomi" required/>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="regEmail" placeholder="Google Email" required/>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regPass" placeholder="Parol (min 6 ta belgi)" minlength="6" required/>
+        </div>
+        
+        <!-- MLBB ID Section -->
+        <div class="mlbb-section">
+          <h4><i class="fas fa-gamepad"></i> MLBB Hisob Ma'lumotlari</h4>
+          <div class="input-row">
+            <div class="input-group">
+              <label>MLBB ID</label>
+              <input type="number" id="mlbbId" placeholder="123456789" required/>
+            </div>
+            <div class="input-group">
+              <label>Server ID</label>
+              <input type="number" id="serverId" placeholder="1234" required/>
+            </div>
+          </div>
+          <div class="warning-box" id="mlbbWarning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Ogohlantirish:</strong> MLBB ID yoki Server ID noto'g'ri kiritilsa, diamondlar boshqa o'yinchiga tushishi yoki yo'qolishi mumkin! Ma'lumotlarni diqqat bilan tekshiring.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish (+5 💎 bonus)</button>
+        <button type="button" class="btn btn-google" onclick="googleRegister()">
+          <i class="fab fa-google"></i> Google bilan ro'yxatdan o'tish
+        </button>
+      </form>
+
+      <p class="auth-footer">Ro'yxatdan o'tish orqali <a href="#">shartlar</a>ga rozilik bildirasiz.</p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

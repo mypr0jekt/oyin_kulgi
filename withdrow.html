@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yechib Olish - NOTRAGEN GAMES</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- Same as index.html -->
+  </nav>
+
+  <div class="auth-container" style="max-width:500px;margin:50px auto">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="fas fa-money-bill-wave" style="font-size:2.5rem;color:var(--diamond)"></i>
+        <h2>Diamond Yechib Olish</h2>
+      </div>
+
+      <div id="withdrawStatus" class="warning-box" style="text-align:center;margin-bottom:20px">
+        💎 Hisobingizda: <strong id="currentDiamonds">0</strong> diamond
+      </div>
+
+      <div id="eligibilityCheck">
+        <p style="margin-bottom:20px;text-align:center">
+          Diamondlarni MLBB hisobingizga olish uchun kamida <strong>172 💎</strong> bo'lishi kerak.
+        </p>
+        
+        <button id="withdrawBtn" class="btn btn-primary btn-block" disabled>
+          Yechib olish uchun yetarli diamond yo'q
+        </button>
+      </div>
+
+      <div id="withdrawForm" class="hidden">
+        <div class="mlbb-section">
+          <h4><i class="fas fa-gamepad"></i> Diamond olinadigan MLBB hisob</h4>
+          <div class="input-row">
+            <div class="input-group">
+              <label>MLBB ID</label>
+              <input type="number" id="withdrawMlbbId" placeholder="123456789" readonly/>
+            </div>
+            <div class="input-group">
+              <label>Server ID</label>
+              <input type="number" id="withdrawServerId" placeholder="1234" readonly/>
+            </div>
+          </div>
+          <p style="font-size:0.85rem;color:#b2bec3;margin-top:10px">
+            <i class="fas fa-info-circle"></i> Bu ma'lumotlar ro'yxatdan o'tishda kiritgan ID'laringiz. O'zgartirish uchun profil sozlamalariga kiring.
+          </p>
+        </div>
+
+        <div class="input-group">
+          <label>Yechib olinadigan diamond miqdori</label>
+          <input type="number" id="withdrawAmount" min="172" placeholder="Min: 172"/>
+        </div>
+
+        <div class="warning-box">
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>Eslatma:</strong> So'rovingiz admin tomonidan tekshiriladi va 24-48 soat ichida MLBB hisobingizga diamondlar yuboriladi.
+        </div>
+
+        <button class="btn btn-primary btn-block" onclick="submitWithdrawal()">
+          <i class="fas fa-paper-plane"></i> So'rov Yuborish
+        </button>
+      </div>
+
+      <div id="withdrawHistory" style="margin-top:30px">
+        <h4 style="margin-bottom:15px;color:var(--secondary)">So'rovlar Tarixi</h4>
+        <div id="historyList">
+          <!-- JS orqali to'ldiriladi -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Update UI
+      document.getElementById('currentDiamonds').textContent = currentUser.diamonds || 0;
+      document.getElementById('withdrawMlbbId').value = currentUser.mlbbId || '';
+      document.getElementById('withdrawServerId').value = currentUser.serverId || '';
+      
+      // Check eligibility
+      const withdrawBtn = document.getElementById('withdrawBtn');
+      if ((currentUser.diamonds || 0) >= 172) {
+        withdrawBtn.disabled = false;
+        withdrawBtn.textContent = 'Yechib Olish Jarayonini Boshlash';
+        withdrawBtn.onclick = () => {
+          document.getElementById('eligibilityCheck').classList.add('hidden');
+          document.getElementById('withdrawForm').classList.remove('hidden');
+        };
+      }
+      
+      // Load history
+      loadWithdrawalHistory();
+    });
+    
+    function submitWithdrawal() {
+      const amount = parseInt(document.getElementById('withdrawAmount').value);
+      
+      if (!amount || amount < 172) {
+        showToast('Minimal yechib olish miqdori: 172 💎', 'error');
+        return;
+      }
+      
+      if (amount > (currentUser.diamonds || 0)) {
+        showToast('Hisobingizda yetarli diamond yo\'q!', 'error');
+        return;
+      }
+      
+      // Create withdrawal request
+      const withdrawal = {
+        id: Date.now(),
+        userId: currentUser.id,
+        username: currentUser.username,
+        mlbbId: currentUser.mlbbId,
+        serverId: currentUser.serverId,
+        amount: amount,
+        date: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      // Save to storage
+      const withdrawals = JSON.parse(localStorage.getItem('notragen_withdrawals') || '[]');
+      withdrawals.push(withdrawal);
+      localStorage.setItem('notragen_withdrawals', JSON.stringify(withdrawals));
+      
+      // Deduct diamonds (pending approval)
+      currentUser.diamonds -= amount;
+      localStorage.setItem('notragen_user', JSON.stringify(currentUser));
+      
+      showToast('So\'rovingiz yuborildi! Admin tekshiruvidan so\'ng diamondlar hisobingizga tushadi. ✅', 'success');
+      
+      // Reset form
+      document.getElementById('withdrawForm').classList.add('hidden');
+      document.getElementById('eligibilityCheck').classList.remove('hidden');
+      document.getElementById('currentDiamonds').textContent = currentUser.diamonds;
+      loadWithdrawalHistory();
+      
+      if (window.updateDiamondDisplay) window.updateDiamondDisplay();
+    }
+    
+    function loadWithdrawalHistory() {
+      const list = document.getElementById('historyList');
+      if (!list) return;
+      
+      const withdrawals = JSON.parse(localStorage.getItem('notragen_withdrawals') || '[]')
+        .filter(w => w.userId === currentUser?.id)
+        .sort((a,b) => new Date(b.date) - new Date(a.date));
+      
+      if (withdrawals.length === 0) {
+        list.innerHTML = '<p style="color:#b2bec3;text-align:center">Hozircha so\'rovlar yo\'q</p>';
+        return;
+      }
+      
+      list.innerHTML = withdrawals.map(w => `
+        <div style="background:rgba(0,0,0,0.2);padding:12px;border-radius:8px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>${w.amount} 💎</strong>
+            <span class="status-badge status-${w.status}">
+              ${w.status === 'approved' ? '✅ Tasdiqlandi' : w.status === 'rejected' ? '❌ Rad etildi' : '⏳ Kutilmoqda'}
+            </span>
+          </div>
+          <small style="color:#b2bec3">${new Date(w.date).toLocaleDateString('uz-UZ')}</small>
+          ${w.status === 'rejected' ? `<p style="color:var(--danger);font-size:0.85rem;margin-top:5px">Sabab: Ma'lumotlar noto'g'ri</p>` : ''}
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
